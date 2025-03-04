@@ -33,6 +33,7 @@ add_library(mpi_advance
     ${neighborhood_SOURCES} ${neighborhood_HEADERS}
     ${heterogeneous_SOURCES} ${heterogeneous_HEADERS}
         tests/BasicPerformanceModel.h
+        tests/NodeAwareModel.h
 )
 
 #target_link_libraries(mpi_advance ${MPI_LIBRARIES} ${EXTERNAL_LIBS} OpenMP::OpenMP_CXX OpenMP::OpenMP_C)

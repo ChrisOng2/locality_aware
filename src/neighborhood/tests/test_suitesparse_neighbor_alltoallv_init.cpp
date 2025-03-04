@@ -19,6 +19,7 @@
 #include "tests/sparse_mat.hpp"
 #include "tests/par_binary_IO.hpp"
 #include "tests/BasicPerformanceModel.h"
+#include "tests/NodeAwareModel.h"
 
 void test_matrix(const char* filename)
 {
@@ -26,13 +27,13 @@ void test_matrix(const char* filename)
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
-    // Read suitesparse matrix
     ParMat<int> A;
     int idx;
     readParMatrix(filename, A);
     form_comm(A);
 
-    BasicTimingMode(A);
+    //BasicTimingMode(A);
+    NodeAwareModel(A);
 }
 
 int main(int argc, char** argv)
