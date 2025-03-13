@@ -11,7 +11,7 @@
 #include "tests/sparse_mat.hpp"
 #include <iostream>
 
-void NodeAwareModel(ParMat<int> A) {
+double NodeAwareModel(ParMat<int> A) {
     double T = 0;
 
     for (int i = 0; i < A.send_comm.n_msgs; i++) {
@@ -58,7 +58,8 @@ void NodeAwareModel(ParMat<int> A) {
         T += Alpha + msg_size * Beta;
     }
 
-    std::cout << "Total Estimates Timing: " << T << " (sec)" << std::endl;
+    //std::cout << "Total Estimates Timing: " << T << " (sec)" << std::endl;
+    return T;
 }
 
 
