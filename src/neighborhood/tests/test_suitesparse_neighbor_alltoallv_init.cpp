@@ -34,8 +34,6 @@ void test_matrix(const char* filename)
     readParMatrix(filename, A);
     form_comm(A);
 
-    double PredictTime = NodeAwareModel(A);
-
     std::vector<int> std_recv_vals, neigh_recv_vals, new_recv_vals,
             locality_recv_vals, part_locality_recv_vals;
     std::vector<int> send_vals, alltoallv_send_vals;
@@ -108,10 +106,12 @@ void test_matrix(const char* filename)
     // Timing test modifications
 
     int TimeTestCount = 1000;
-    double totaltime = 0;
+    double t1, t2;
+
+    MPI_Barrier(MPI_COMM_WORLD);
+    t1 = MPI_Wtime();
+
     for (int i = 0; i < TimeTestCount; i++) {
-        clock_t tcounter;
-        tcounter = std::clock();
         PMPI_Neighbor_alltoallv(alltoallv_send_vals.data(),
            send_counts,
            A.send_comm.ptr.data(),
@@ -121,13 +121,16 @@ void test_matrix(const char* filename)
            A.recv_comm.ptr.data(),
            MPI_INT,
            std_comm);
-        tcounter = std::clock() - tcounter;
-        totaltime += tcounter;
     }
-    totaltime = totaltime / TimeTestCount / CLOCKS_PER_SEC;
 
-    std::cout << "| Actual Computation Time: " << totaltime << " seconds |";
-    std::cout << "Predicted Computation Time: " << PredictTime << " seconds | \n";
+    MPI_Barrier(MPI_COMM_WORLD);
+    t2 = MPI_Wtime();
+
+    if (rank == 0) { /* use time on master node */
+        double PredictTime = NodeAwareModel(A);
+        std::cout << "| Actual Computation Time: " << (t2-t1) / (TimeTestCount * num_procs) << " seconds |";
+        std::cout << "Predicted Computation Time: " << PredictTime << " seconds | \n";
+    }
 
     if (A.send_comm.counts.data() == NULL)
         delete[] send_counts;
