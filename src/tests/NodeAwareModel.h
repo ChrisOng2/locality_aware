@@ -23,35 +23,35 @@ double NodeAwareModel(ParMat<int> A) {
 
         if (proc/PPS == rank/PPS) {
             if (msg_size < 8192) {
-                Alpha = 5.3E-7;
-                Beta = 1/3.2E9;
+                Alpha = 6.67E-7;
+                Beta = 5.8E-10;
             }
 
             if (msg_size > 8192) {
-                Alpha = 1.7E-6;
-                Beta = 1/6.2E9;
+                Alpha = 3.20E-7;
+                Beta = 3.46E-10;
             }
         }
         else if (proc/PPN == rank/PPN) {
             if (msg_size < 8192) {
-                Alpha = 1.2E-6;
-                Beta = 1/9.6E8;
+                Alpha = 6.47E-7;
+                Beta = 5.93E-10;
             }
 
             if (msg_size > 8192) {
-                Alpha = 2.5E-6;
-                Beta = 1/6.2E9;
+                Alpha = 3.49E-7;
+                Beta = 3.46E-10;
             }
         }
         else {
             if (msg_size < 8192) {
-                Alpha = 7.0E-6;
-                Beta = 1/7.5E8;
+                Alpha = 4.53E-6;
+                Beta = 2.66E-9;
             }
 
             if (msg_size > 8192) {
-                Alpha = 3.0E-6;
-                Beta = 1/2.9E9;
+                Alpha = 3.23E-6;
+                Beta = 6.87E-10;
             }
         }
 

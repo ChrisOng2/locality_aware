@@ -107,8 +107,8 @@ void test_matrix(const char* filename)
 
     int TimeTestCount = 1000;
     double t1, t2;
+    double tFinalSend, tFinalReceive, PredictiveTimingSend, PredictiveTimingReceive;
 
-    MPI_Barrier(MPI_COMM_WORLD);
     t1 = MPI_Wtime();
 
     for (int i = 0; i < TimeTestCount; i++) {
@@ -123,13 +123,17 @@ void test_matrix(const char* filename)
            std_comm);
     }
 
-    MPI_Barrier(MPI_COMM_WORLD);
     t2 = MPI_Wtime();
 
+    tFinalSend = (t2 - t1) / TimeTestCount;
+    MPI_Allreduce(&tFinalSend, &tFinalReceive, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+
+    PredictiveTimingSend = NodeAwareModel(A);
+    MPI_Allreduce(&PredictiveTimingSend, &PredictiveTimingReceive, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+
     if (rank == 0) { /* use time on master node */
-        double PredictTime = NodeAwareModel(A);
-        std::cout << "| Actual Computation Time: " << (t2-t1) / (TimeTestCount * num_procs) << " seconds |";
-        std::cout << "Predicted Computation Time: " << PredictTime << " seconds | \n";
+        std::cout << "| Actual Computation Time: " << tFinalReceive << " seconds |";
+        std::cout << "Predicted Computation Time: " << PredictiveTimingReceive << " seconds | \n";
     }
 
     if (A.send_comm.counts.data() == NULL)
